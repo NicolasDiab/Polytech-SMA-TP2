@@ -5,11 +5,15 @@ import agent.Provider;
 import service.PlaneTicket;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Negociation {
 
-    public static final double NEGOCIATIONS_DURATION = 5;
+    private static final int NEGOCIATIONS_DURATION = 6;
+
+    private int nb_iterations_left;
 
     private List<Message> messages;
 
@@ -25,6 +29,18 @@ public class Negociation {
         this.planeTicket = planeTicket;
         this.negociator = negociator;
         this.provider = provider;
+
+        this.nb_iterations_left = NEGOCIATIONS_DURATION;
+        this.messages = new ArrayList<>();
+        this.startDate = new SimpleDateFormat();
+    }
+
+    public int getNb_iterations_left() {
+        return nb_iterations_left;
+    }
+
+    public void setNb_iterations_left(int nb_iterations_left) {
+        this.nb_iterations_left = nb_iterations_left;
     }
 
     public static double getNegociationsDuration() {

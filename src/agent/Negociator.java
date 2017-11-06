@@ -2,6 +2,7 @@ package agent;
 
 import message.Negociation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,10 +17,10 @@ public class Negociator extends Agent {
 
     }
 
-    public Negociator(List<Provider> providers, HashMap<Constraint, String> constraints, List<Negociation> negociations) {
+    public Negociator(List<Provider> providers, HashMap<Constraint, String> constraints) {
         this.providers = providers;
         this.constraints = constraints;
-        this.negociations = negociations;
+        this.negociations = new ArrayList<>();
     }
 
     public List<Negociation> getNegociations() {

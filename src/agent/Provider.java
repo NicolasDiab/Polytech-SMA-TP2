@@ -3,6 +3,7 @@ package agent;
 import message.Negociation;
 import service.PlaneTicket;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,12 +19,11 @@ public class Provider extends Agent {
 
     }
 
-    public Provider(List<PlaneTicket> planeTickets, List<Negociator> negociators, HashMap<Constraint, String> constraints,
-                    List<Negociation> negociations) {
+    public Provider(List<PlaneTicket> planeTickets, List<Negociator> negociators, HashMap<Constraint, String> constraints) {
         this.planeTickets = planeTickets;
         this.negociators = negociators;
         this.constraints = constraints;
-        this.negociations = negociations;
+        this.negociations = new ArrayList<>();
     }
 
     public List<Negociation> getNegociations() {
