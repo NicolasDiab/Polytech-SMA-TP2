@@ -12,6 +12,8 @@ public class PlaneTicket {
 
     private Double price;
 
+    private Company company;
+
     public PlaneTicket(SimpleDateFormat dateTimeDeparture, SimpleDateFormat dateTimeArrival, Airport airportDeparture,
                        Airport airportArrival, Double price) {
         this.dateTimeDeparture = dateTimeDeparture;

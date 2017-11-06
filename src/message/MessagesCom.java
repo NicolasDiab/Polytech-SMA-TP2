@@ -5,6 +5,9 @@ import agent.Agent;
 import java.util.HashMap;
 import java.util.List;
 
+
+//TODO A SUPPRIMER !!!!
+
 public class MessagesCom {
     private static MessagesCom instance = null;
 
