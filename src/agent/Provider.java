@@ -19,9 +19,9 @@ public class Provider extends Agent {
 
     }
 
-    public Provider(List<PlaneTicket> planeTickets, List<Negociator> negociators, HashMap<Constraint, String> constraints) {
+    public Provider(List<PlaneTicket> planeTickets, HashMap<Constraint, String> constraints) {
         this.planeTickets = planeTickets;
-        this.negociators = negociators;
+        this.negociators = new ArrayList<>();
         this.constraints = constraints;
         this.negociations = new ArrayList<>();
     }

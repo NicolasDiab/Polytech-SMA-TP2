@@ -17,8 +17,8 @@ public class Negociator extends Agent {
 
     }
 
-    public Negociator(List<Provider> providers, HashMap<Constraint, String> constraints) {
-        this.providers = providers;
+    public Negociator(HashMap<Constraint, String> constraints) {
+        this.providers = new ArrayList<>();
         this.constraints = constraints;
         this.negociations = new ArrayList<>();
     }

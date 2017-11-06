@@ -4,7 +4,7 @@ import agent.Negociator;
 import agent.Provider;
 import service.PlaneTicket;
 
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,8 +17,8 @@ public class Negociation {
 
     private List<Message> messages;
 
-    private SimpleDateFormat startDate;
-    private SimpleDateFormat endDate;
+    private ZonedDateTime startDate;
+    private ZonedDateTime endDate;
 
     private PlaneTicket planeTicket;
 
@@ -32,7 +32,7 @@ public class Negociation {
 
         this.nb_iterations_left = NEGOCIATIONS_DURATION;
         this.messages = new ArrayList<>();
-        this.startDate = new SimpleDateFormat();
+        this.startDate = ZonedDateTime.now();
     }
 
     public int getNb_iterations_left() {
@@ -55,19 +55,19 @@ public class Negociation {
         this.messages = messages;
     }
 
-    public SimpleDateFormat getStartDate() {
+    public ZonedDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(SimpleDateFormat startDate) {
+    public void setStartDate(ZonedDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public SimpleDateFormat getEndDate() {
+    public ZonedDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(SimpleDateFormat endDate) {
+    public void setEndDate(ZonedDateTime endDate) {
         this.endDate = endDate;
     }
 

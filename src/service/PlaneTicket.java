@@ -1,11 +1,11 @@
 package service;
 
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 
 public class PlaneTicket {
 
-    private SimpleDateFormat dateTimeDeparture;
-    private SimpleDateFormat dateTimeArrival;
+    private ZonedDateTime dateTimeDeparture;
+    private ZonedDateTime dateTimeArrival;
 
     private Airport airportDeparture;
     private Airport airportArrival;
@@ -14,7 +14,7 @@ public class PlaneTicket {
 
     private Company company;
 
-    public PlaneTicket(SimpleDateFormat dateTimeDeparture, SimpleDateFormat dateTimeArrival, Airport airportDeparture,
+    public PlaneTicket(ZonedDateTime dateTimeDeparture, ZonedDateTime dateTimeArrival, Airport airportDeparture,
                        Airport airportArrival, Double price) {
         this.dateTimeDeparture = dateTimeDeparture;
         this.dateTimeArrival = dateTimeArrival;
@@ -23,19 +23,19 @@ public class PlaneTicket {
         this.price = price;
     }
 
-    public SimpleDateFormat getDateTimeDeparture() {
+    public ZonedDateTime getDateTimeDeparture() {
         return dateTimeDeparture;
     }
 
-    public void setDateTimeDeparture(SimpleDateFormat dateTimeDeparture) {
+    public void setDateTimeDeparture(ZonedDateTime dateTimeDeparture) {
         this.dateTimeDeparture = dateTimeDeparture;
     }
 
-    public SimpleDateFormat getDateTimeArrival() {
+    public ZonedDateTime getDateTimeArrival() {
         return dateTimeArrival;
     }
 
-    public void setDateTimeArrival(SimpleDateFormat dateTimeArrival) {
+    public void setDateTimeArrival(ZonedDateTime dateTimeArrival) {
         this.dateTimeArrival = dateTimeArrival;
     }
 
