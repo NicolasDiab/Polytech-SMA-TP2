@@ -35,9 +35,9 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import java.util.*;
 
 public class TravelSellerAgent extends Agent {
-	// The catalogue of books for sale (maps the title of a book to its price)
+	// The catalogue of books for sale (maps the title of a destination to its price)
 	private Hashtable catalogue;
-	// The GUI by means of which the user can add books in the catalogue
+	// The GUI by means of which the user can add destinations in the catalogue
 	private TravelSellerGui myGui;
 
 	// Put agent initializations here
@@ -49,12 +49,12 @@ public class TravelSellerAgent extends Agent {
 		myGui = new TravelSellerGui(this);
 		myGui.showGui();
 
-		// Register the book-selling service in the yellow pages
+		// Register the flights-selling service in the yellow pages
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
-		sd.setType("book-selling");
-		sd.setName("JADE-book-trading");
+		sd.setType("flights-selling");
+		sd.setName("JADE-flights-trading");
 		dfd.addServices(sd);
 		try {
 			DFService.register(this, dfd);
@@ -88,11 +88,11 @@ public class TravelSellerAgent extends Agent {
 	/**
      This is invoked by the GUI when the user adds a new book for sale
 	 */
-	public void updateCatalogue(final String title, final int price) {
+	public void updateCatalogue(final String destination, final int price) {
 		addBehaviour(new OneShotBehaviour() {
 			public void action() {
-				catalogue.put(title, new Integer(price));
-				System.out.println(title+" inserted into catalogue. Price = "+price);
+				catalogue.put(destination, new Integer(price));
+				System.out.println(destination+" inserted into catalogue. Price = "+price);
 			}
 		} );
 	}
@@ -111,12 +111,12 @@ public class TravelSellerAgent extends Agent {
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg != null) {
 				// CFP Message received. Process it
-				String title = msg.getContent();
+				String destination = msg.getContent();
 				ACLMessage reply = msg.createReply();
 
-				Integer price = (Integer) catalogue.get(title);
+				Integer price = (Integer) catalogue.get(destination);
 				if (price != null) {
-					// The requested book is available for sale. Reply with the price
+					// The requested destination is available for sale. Reply with the price
 					reply.setPerformative(ACLMessage.PROPOSE);
 					reply.setContent(String.valueOf(price.intValue()));
 				}
@@ -147,16 +147,16 @@ public class TravelSellerAgent extends Agent {
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg != null) {
 				// ACCEPT_PROPOSAL Message received. Process it
-				String title = msg.getContent();
+				String destination = msg.getContent();
 				ACLMessage reply = msg.createReply();
 
-				Integer price = (Integer) catalogue.remove(title);
+				Integer price = (Integer) catalogue.remove(destination);
 				if (price != null) {
 					reply.setPerformative(ACLMessage.INFORM);
-					System.out.println(title+" sold to agent "+msg.getSender().getName());
+					System.out.println(destination+" sold to agent "+msg.getSender().getName());
 				}
 				else {
-					// The requested book has been sold to another buyer in the meanwhile .
+					// The requested flight has been sold to another buyer in the meanwhile .
 					reply.setPerformative(ACLMessage.FAILURE);
 					reply.setContent("not-available");
 				}

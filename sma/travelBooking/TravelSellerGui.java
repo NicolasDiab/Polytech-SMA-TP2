@@ -31,7 +31,7 @@ import javax.swing.*;
 class TravelSellerGui extends JFrame {
 	private TravelSellerAgent myAgent;
 	
-	private JTextField titleField, priceField;
+	private JTextField destinationField, priceField;
 	
 	TravelSellerGui(TravelSellerAgent a) {
 		super(a.getLocalName());
@@ -40,9 +40,9 @@ class TravelSellerGui extends JFrame {
 		
 		JPanel p = new JPanel();
 		p.setLayout(new GridLayout(2, 2));
-		p.add(new JLabel("Book title:"));
-		titleField = new JTextField(15);
-		p.add(titleField);
+		p.add(new JLabel("Travel destination:"));
+		destinationField = new JTextField(15);
+		p.add(destinationField);
 		p.add(new JLabel("Price:"));
 		priceField = new JTextField(15);
 		p.add(priceField);
@@ -52,10 +52,10 @@ class TravelSellerGui extends JFrame {
 		addButton.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
 				try {
-					String title = titleField.getText().trim();
+					String title = destinationField.getText().trim();
 					String price = priceField.getText().trim();
 					myAgent.updateCatalogue(title, Integer.parseInt(price));
-					titleField.setText("");
+					destinationField.setText("");
 					priceField.setText("");
 				}
 				catch (Exception e) {

@@ -35,7 +35,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 public class TravelBuyerAgent extends Agent {
 	// The title of the book to buy
-	private String targetBookTitle;
+	private String targetDestination;
 	private int maxPrice;
 	private int nbTries;
 	// The list of known seller agents
@@ -47,23 +47,23 @@ public class TravelBuyerAgent extends Agent {
 		System.out.println("Hallo! Buyer-agent "+getAID().getName()+" is ready.");
 		nbTries = 0;
 
-		// Get the title of the book to buy as a start-up argument
+		// Get the destination of the flight to buy as a start-up argument
 		Object[] args = getArguments();
 		if (args != null && args.length > 1) {
-			targetBookTitle = (String) args[0];
-			System.out.println("Target book is "+targetBookTitle);
+			targetDestination = (String) args[0];
+			System.out.println("Target destination is " + targetDestination);
 
 			maxPrice = Integer.parseInt((String) args[1]);
-			System.out.println("Max price is "+maxPrice);
+			System.out.println("Max price is " + maxPrice);
 
 			// Add a TickerBehaviour that schedules a request to seller agents every minute
 			addBehaviour(new TickerBehaviour(this, 60000) {
 				protected void onTick() {
-					System.out.println("Trying to buy "+targetBookTitle);
+					System.out.println("Trying to buy " + targetDestination);
 					// Update the list of seller agents
 					DFAgentDescription template = new DFAgentDescription();
 					ServiceDescription sd = new ServiceDescription();
-					sd.setType("book-selling");
+					sd.setType("flights-selling");
 					template.addServices(sd);
 					try {
 						DFAgentDescription[] result = DFService.search(myAgent, template); 
@@ -85,7 +85,7 @@ public class TravelBuyerAgent extends Agent {
 		}
 		else {
 			// Make the agent terminate
-			System.out.println("No target book title or max price specified");
+			System.out.println("No target flight destination or max price specified");
 			doDelete();
 		}
 	}
@@ -98,8 +98,8 @@ public class TravelBuyerAgent extends Agent {
 
 	/**
 	   Inner class RequestPerformer.
-	   This is the behaviour used by Book-buyer agents to request seller 
-	   agents the target book.
+	   This is the behaviour used by travel-buyer agents to request seller
+	   agents the target destination.
 	 */
 	private class RequestPerformer extends Behaviour {
 		private AID bestSeller; // The agent who provides the best offer 
@@ -125,7 +125,6 @@ public class TravelBuyerAgent extends Agent {
 				break;
 			case 3:
 				receivePurchaseOrderReply();
-
 				break;
 			}        
 		}
@@ -133,31 +132,32 @@ public class TravelBuyerAgent extends Agent {
 		private void priceTooHigh() {
 			ACLMessage order = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
 			order.addReceiver(bestSeller);
-			order.setContent(targetBookTitle);
-			order.setConversationId("book-trade");
+			order.setContent(targetDestination);
+			order.setConversationId("flight-trade");
 			order.setReplyWith("order"+System.currentTimeMillis());
 			myAgent.send(order);
 			// Go back to find sellers and improve price
 			if (nbTries < 10) {
 				maxPrice *= 1.1;
 				nbTries++;
+				step = 0; // try again
 			} else {
-				maxPrice = maxPrice / 2;
-				nbTries = 0;
+				// No ticket found - stop buying - go to step Done
+				bestSeller = null;
+				step = 2;
 			}
-			step = 0;
 		}
 
 		private void priceCorrect() {
 			// Send the purchase order to the seller that provided the best offer
 			ACLMessage order = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
 			order.addReceiver(bestSeller);
-			order.setContent(targetBookTitle);
-			order.setConversationId("book-trade");
+			order.setContent(targetDestination);
+			order.setConversationId("flight-trade");
 			order.setReplyWith("order"+System.currentTimeMillis());
 			myAgent.send(order);
 			// Prepare the template to get the purchase order reply
-			mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
+			mt = MessageTemplate.and(MessageTemplate.MatchConversationId("flight-trade"),
 					MessageTemplate.MatchInReplyTo(order.getReplyWith()));
 			step = 3;
 		}
@@ -169,12 +169,12 @@ public class TravelBuyerAgent extends Agent {
                 // Purchase order reply received
                 if (reply.getPerformative() == ACLMessage.INFORM) {
                     // Purchase successful. We can terminate
-                    System.out.println(targetBookTitle+" successfully purchased from agent "+reply.getSender().getName());
+                    System.out.println(targetDestination +" successfully purchased flight from agent "+reply.getSender().getName());
                     System.out.println("Price = "+bestPrice);
                     myAgent.doDelete();
                 }
                 else {
-                    System.out.println("Attempt failed: requested book already sold.");
+                    System.out.println("Attempt failed: requested flight already sold.");
                 }
 
                 step = 4;
@@ -215,19 +215,19 @@ public class TravelBuyerAgent extends Agent {
 			for (int i = 0; i < sellerAgents.length; ++i) {
                 cfp.addReceiver(sellerAgents[i]);
             }
-			cfp.setContent(targetBookTitle);
-			cfp.setConversationId("book-trade");
+			cfp.setContent(targetDestination);
+			cfp.setConversationId("flight-trade");
 			cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
 			myAgent.send(cfp);
 			// Prepare the template to get proposals
-			mt = MessageTemplate.and(MessageTemplate.MatchConversationId("book-trade"),
+			mt = MessageTemplate.and(MessageTemplate.MatchConversationId("flight-trade"),
                     MessageTemplate.MatchInReplyTo(cfp.getReplyWith()));
 			step = 1;
 		}
 
 		public boolean done() {
 			if (step == 2 && bestSeller == null) {
-				System.out.println("Attempt failed: "+targetBookTitle+" not available for sale");
+				System.out.println("Attempt failed: "+ targetDestination +" flights not available for sale");
 			}
 			return ((step == 2 && bestSeller == null) || step == 4);
 		}
