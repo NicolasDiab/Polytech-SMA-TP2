@@ -32,6 +32,8 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
+import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class TravelSellerAgent extends Agent {
@@ -89,9 +91,15 @@ public class TravelSellerAgent extends Agent {
      This is invoked by the GUI when the user adds a new book for sale
 	 */
 	public void updateCatalogue(final String destination, final int price) {
+		//TODO add parameter
+		ZonedDateTime date1 = ZonedDateTime.parse("2017-05-03T10:10:01+01:00[Europe/Paris]");
+		ZonedDateTime date2 = ZonedDateTime.parse("2017-05-03T10:12:01+01:00[Europe/Paris]");
+
+		PlaneTicket planeTicket = new PlaneTicket(date1, date2, "Lyon", destination, new Integer(price));
+
 		addBehaviour(new OneShotBehaviour() {
 			public void action() {
-				catalogue.put(destination, new Integer(price));
+				catalogue.put(destination, planeTicket);
 				System.out.println(destination+" inserted into catalogue. Price = "+price);
 			}
 		} );
@@ -114,14 +122,20 @@ public class TravelSellerAgent extends Agent {
 				String destination = msg.getContent();
 				ACLMessage reply = msg.createReply();
 
-				Integer price = (Integer) catalogue.get(destination);
-				if (price != null) {
-					// The requested destination is available for sale. Reply with the price
+				PlaneTicket planeTicket = (PlaneTicket) catalogue.get(destination);
+				if (planeTicket.getPrice() != null) {
+					// The requested destination is available for sale. Reply with the ticket
+
+					//reply.setContent(String.valueOf(planeTicket.getPrice().intValue()));
 					reply.setPerformative(ACLMessage.PROPOSE);
-					reply.setContent(String.valueOf(price.intValue()));
+					try {
+						reply.setContentObject(planeTicket);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 				else {
-					// The requested book is NOT available for sale.
+					// The requested flight is NOT available for sale.
 					reply.setPerformative(ACLMessage.REFUSE);
 					reply.setContent("not-available");
 				}
@@ -150,8 +164,8 @@ public class TravelSellerAgent extends Agent {
 				String destination = msg.getContent();
 				ACLMessage reply = msg.createReply();
 
-				Integer price = (Integer) catalogue.remove(destination);
-				if (price != null) {
+				PlaneTicket planeTicket = (PlaneTicket) catalogue.remove(destination);
+				if (planeTicket.getPrice() != null) {
 					reply.setPerformative(ACLMessage.INFORM);
 					System.out.println(destination+" sold to agent "+msg.getSender().getName());
 				}

@@ -1,23 +1,24 @@
 package sma.travelBooking;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-public class PlaneTicket {
+public class PlaneTicket implements Serializable {
     private ZonedDateTime dateTimeDeparture;
     private ZonedDateTime dateTimeArrival;
 
     private String departure;
     private String arrival;
 
-    private Double price;
+    private Integer price;
 
     private Company company;
 
-    public PlaneTicket(ZonedDateTime dateTimeDeparture, ZonedDateTime dateTimeArrival, String Departure,
-                       String arrival, Double price) {
+    public PlaneTicket(ZonedDateTime dateTimeDeparture, ZonedDateTime dateTimeArrival, String departure,
+                       String arrival, Integer price) {
         this.dateTimeDeparture = dateTimeDeparture;
         this.dateTimeArrival = dateTimeArrival;
-        this.departure = Departure;
+        this.departure = departure;
         this.arrival = arrival;
         this.price = price;
     }
@@ -54,11 +55,11 @@ public class PlaneTicket {
         this.arrival = arrival;
     }
 
-    public Double getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 }

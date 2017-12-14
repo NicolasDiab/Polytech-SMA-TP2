@@ -32,6 +32,7 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.UnreadableException;
 
 public class TravelBuyerAgent extends Agent {
 	// The title of the book to buy
@@ -103,7 +104,7 @@ public class TravelBuyerAgent extends Agent {
 	 */
 	private class RequestPerformer extends Behaviour {
 		private AID bestSeller; // The agent who provides the best offer 
-		private int bestPrice;  // The best offered price
+		private PlaneTicket cheapestTicket;  // The best offered price ticket
 		private int repliesCnt = 0; // The counter of replies from seller agents
 		private MessageTemplate mt; // The template to receive replies
 		private int step = 0;
@@ -117,7 +118,7 @@ public class TravelBuyerAgent extends Agent {
 				receiveProposals();
 				break;
 			case 2:
-				if (bestPrice < maxPrice) {
+				if (cheapestTicket.getPrice() < maxPrice) {
 					priceCorrect();
 				} else {
 					priceTooHigh();
@@ -170,7 +171,7 @@ public class TravelBuyerAgent extends Agent {
                 if (reply.getPerformative() == ACLMessage.INFORM) {
                     // Purchase successful. We can terminate
                     System.out.println(targetDestination +" successfully purchased flight from agent "+reply.getSender().getName());
-                    System.out.println("Price = "+bestPrice);
+                    System.out.println("Price = "+ cheapestTicket.getPrice());
                     myAgent.doDelete();
                 }
                 else {
@@ -191,10 +192,15 @@ public class TravelBuyerAgent extends Agent {
                 // Reply received
                 if (reply.getPerformative() == ACLMessage.PROPOSE) {
                     // This is an offer
-                    int price = Integer.parseInt(reply.getContent());
-                    if (bestSeller == null || price < bestPrice) {
-                        // This is the best offer at present
-                        bestPrice = price;
+					PlaneTicket planeTicket = null;
+					try {
+						planeTicket = (PlaneTicket) reply.getContentObject();
+					} catch (UnreadableException e) {
+						e.printStackTrace();
+					}
+					if (planeTicket != null && (bestSeller == null || planeTicket.getPrice() < cheapestTicket.getPrice())) {
+                        // This is the cheapest offer at present
+                        cheapestTicket = planeTicket;
                         bestSeller = reply.getSender();
                     }
                 }
