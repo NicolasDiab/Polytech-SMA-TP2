@@ -206,11 +206,19 @@ public class TravelBuyerAgent extends Agent {
 					} catch (UnreadableException e) {
 						e.printStackTrace();
 					}
-					if (planeTicket != null && (bestSeller == null || planeTicket.getPrice() < cheapestTicket.getPrice())) {
-                        // This is the cheapest offer at present
-                        cheapestTicket = planeTicket;
-                        bestSeller = reply.getSender();
-                    }
+
+					// check the ticket
+					if (planeTicket != null) {
+						// check the date
+						if (dateTimeDeparture.getDayOfYear() == planeTicket.getDateTimeDeparture().getDayOfYear()) {
+							// then the price
+							if (bestSeller == null || planeTicket.getPrice() < cheapestTicket.getPrice()) {
+								// This is the cheapest offer at present
+								cheapestTicket = planeTicket;
+								bestSeller = reply.getSender();
+							}
+						}
+					}
                 }
                 repliesCnt++;
                 if (repliesCnt >= sellerAgents.length) {
