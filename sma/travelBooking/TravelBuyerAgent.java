@@ -34,11 +34,16 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.UnreadableException;
 
+import java.time.ZonedDateTime;
+
 public class TravelBuyerAgent extends Agent {
-	// The title of the book to buy
+	// The ticket's informations to buy
 	private String targetDestination;
 	private int maxPrice;
 	private int nbTries;
+
+	private ZonedDateTime dateTimeDeparture;
+
 	// The list of known seller agents
 	private AID[] sellerAgents;
 
@@ -50,12 +55,15 @@ public class TravelBuyerAgent extends Agent {
 
 		// Get the destination of the flight to buy as a start-up argument
 		Object[] args = getArguments();
-		if (args != null && args.length > 1) {
+		if (args != null && args.length > 2) {
 			targetDestination = (String) args[0];
 			System.out.println("Target destination is " + targetDestination);
 
 			maxPrice = Integer.parseInt((String) args[1]);
 			System.out.println("Max price is " + maxPrice);
+
+			dateTimeDeparture = ZonedDateTime.parse((String) args[2]); // cast a string to a date
+			System.out.println("Agent wants to depart at " + dateTimeDeparture);
 
 			// Add a TickerBehaviour that schedules a request to seller agents every minute
 			addBehaviour(new TickerBehaviour(this, 60000) {

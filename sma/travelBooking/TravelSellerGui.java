@@ -25,13 +25,14 @@ package sma.travelBooking;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.time.ZonedDateTime;
 import javax.swing.*;
 
 
 class TravelSellerGui extends JFrame {
 	private TravelSellerAgent myAgent;
 	
-	private JTextField destinationField, priceField;
+	private JTextField destinationField, priceField, dateField;
 	
 	TravelSellerGui(TravelSellerAgent a) {
 		super(a.getLocalName());
@@ -39,13 +40,16 @@ class TravelSellerGui extends JFrame {
 		myAgent = a;
 		
 		JPanel p = new JPanel();
-		p.setLayout(new GridLayout(2, 2));
+		p.setLayout(new GridLayout(3, 2));
 		p.add(new JLabel("Travel destination:"));
 		destinationField = new JTextField(15);
 		p.add(destinationField);
 		p.add(new JLabel("Price:"));
 		priceField = new JTextField(15);
 		p.add(priceField);
+		p.add(new JLabel("Departure date:"));
+		dateField = new JTextField(20);
+		p.add(dateField);
 		getContentPane().add(p, BorderLayout.CENTER);
 		
 		JButton addButton = new JButton("Add");
@@ -54,9 +58,11 @@ class TravelSellerGui extends JFrame {
 				try {
 					String title = destinationField.getText().trim();
 					String price = priceField.getText().trim();
-					myAgent.updateCatalogue(title, Integer.parseInt(price));
+					ZonedDateTime departure = ZonedDateTime.parse(dateField.getText().trim());
+					myAgent.updateCatalogue(title, Integer.parseInt(price), departure);
 					destinationField.setText("");
 					priceField.setText("");
+					dateField.setText("");
 				}
 				catch (Exception e) {
 					JOptionPane.showMessageDialog(TravelSellerGui.this, "Invalid values. "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

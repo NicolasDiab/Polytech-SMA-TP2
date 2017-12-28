@@ -90,17 +90,17 @@ public class TravelSellerAgent extends Agent {
 	/**
      This is invoked by the GUI when the user adds a new book for sale
 	 */
-	public void updateCatalogue(final String destination, final int price) {
+	public void updateCatalogue(final String destination, final int price, final ZonedDateTime departure) {
 		//TODO add parameter
-		ZonedDateTime date1 = ZonedDateTime.parse("2017-05-03T10:10:01+01:00[Europe/Paris]");
-		ZonedDateTime date2 = ZonedDateTime.parse("2017-05-03T10:12:01+01:00[Europe/Paris]");
+		//ZonedDateTime date1 = ZonedDateTime.parse("2017-05-03T10:10:00+01:00[Europe/Paris]");
+		ZonedDateTime date2 = ZonedDateTime.parse("2017-05-03T10:12:00+01:00[Europe/Paris]"); // PARAM NOT USED
 
-		PlaneTicket planeTicket = new PlaneTicket(date1, date2, "Lyon", destination, new Integer(price));
+		PlaneTicket planeTicket = new PlaneTicket(departure, date2, "Lyon", destination, new Integer(price));
 
 		addBehaviour(new OneShotBehaviour() {
 			public void action() {
 				catalogue.put(destination, planeTicket);
-				System.out.println(destination+" inserted into catalogue. Price = "+price);
+				System.out.println(destination+" inserted into catalogue. Price = "+price + " date = " + departure);
 			}
 		} );
 	}
